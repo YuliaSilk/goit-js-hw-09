@@ -14,39 +14,52 @@ const elements = {
     seconds : document.querySelector('span[data-seconds]'),
 }
 
-elements.btnStart.disabled = true;
 let timerId;
-const picker = flatpickr("#datetime-picker", options);
+
 const options = {
     enableTime: true,
     time_24hr: true,
     defaultDate: new Date(),
     minuteIncrement: 1,
     onClose(selectedDates) {
-      const selectedDate = selectedDates[0];
-      const currentDate = new Date();
-      if (selectedDate <= currentDate) {
-        Notiflix.Notify.warning("Please choose a date in the future");
-        return;
-       } else {
-        (selectedDate > currentDate) 
-            elements.btnStart.disabled = false;
-            elements.btnStart.addEventListener('click', () =>{
-               const timerId = setInterval(() => {
-                const currenTime = new Date ();
-                const ms = selecteddates[0].getTime() - currentTime.getTime();
-                elements.days.textContent = addLeadingZero(convertMs(ms).days);
-                elements.hours.textContent = addLeadingZero(convertMs(ms).hours);
-                elements.minutes.textContent = addLeadingZero(convertMs(ms).minutes);
-                elements.seconds.textContent = addLeadingZero(convertMs(ms).seconds);
-               }, 1000);
-            });
+        const selectedDate = selectedDates[0];
+        const currentDate = new Date();
+        if (selectedDate <= currentDate) {
+            Notiflix.Notify.warning("Please choose a date in the future");
+            return;
+        } else {
+            if (timerId) {
+                // clearInterval(timerId);
+                elements.btnStart.disabled = true; 
+            } else {
+                elements.btnStart.disabled = false; 
+                timerId = setInterval(() => {
+                    const currentTime = new Date();
+                    const ms = selectedDate.getTime() - currentTime.getTime();
+                    if (ms <= 0) {
+                        clearInterval(timerId); 
+                        elements.btnStart.disabled = true; 
+                        return;
+                    }
+                    updateTimer(ms);
+                }, 1000);
+            }
         }
-       },
-    } 
-    function addLeadingZero(value) {
-        return value.toString().padStart(2, "0");
-      }
+    }
+};
+
+const picker = flatpickr("#datetime-picker", options);
+
+function updateTimer(ms) {
+    const { days, hours, minutes, seconds } = convertMs(ms);
+    elements.days.textContent = addLeadingZero(days);
+    elements.hours.textContent = addLeadingZero(hours);
+    elements.minutes.textContent = addLeadingZero(minutes);
+    elements.seconds.textContent = addLeadingZero(seconds);
+}
+function addLeadingZero(value) {
+    return value.toString().padStart(2, "0");
+}
   
   function convertMs(ms) {
     const second = 1000;
