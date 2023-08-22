@@ -13,7 +13,7 @@ function onBtnStartClick() {
    
     btnStart.disabled = true;
     btnStop.disabled = false;
-    timerId = setInterval(() => {
+    let timerId = setInterval(() => {
     body.style.backgroundColor = getRandomHexColor();
     }, 1000);
 }
