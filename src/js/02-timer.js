@@ -15,7 +15,7 @@ const elements = {
 }
 
 let timerId;
-
+elements.btnStart.disabled = true; 
 const options = {
     enableTime: true,
     time_24hr: true,
@@ -29,16 +29,18 @@ const options = {
             return;
         } else {
             if (timerId) {
-                // clearInterval(timerId);
+                clearInterval(timerId);
                 elements.btnStart.disabled = true; 
             } else {
                 elements.btnStart.disabled = false; 
                 timerId = setInterval(() => {
                     const currentTime = new Date();
                     const ms = selectedDate.getTime() - currentTime.getTime();
+                    elements.input.disabled = true;
                     if (ms <= 0) {
                         clearInterval(timerId); 
                         elements.btnStart.disabled = true; 
+                      
                         return;
                     }
                     updateTimer(ms);
