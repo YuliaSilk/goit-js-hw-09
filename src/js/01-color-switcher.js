@@ -21,5 +21,5 @@ function onBtnStartClick() {
 function onBtnStopClick() {
     btnStop.disabled = true;
     btnStart.disabled = false;
-    clearInterval(timerId);
+    let clearInterval(timerId);
 }
